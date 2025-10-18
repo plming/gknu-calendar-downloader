@@ -4,13 +4,17 @@ export interface GknuCalendarEvent {
   notice_end_date: string;
 }
 
-export const AVAILABLE_YEAR_START = 2000;
-export const AVAILABLE_YEAR_END = new Date().getFullYear() + 1;
+export function isAvailableYear(year: number): boolean {
+  const AVAILABLE_YEAR_START = 2000;
+  const AVAILABLE_YEAR_END = new Date().getFullYear() + 1;
+
+  return year >= AVAILABLE_YEAR_START && year <= AVAILABLE_YEAR_END;
+}
 
 export async function fetchEventsOnYear(
   year: number
 ): Promise<GknuCalendarEvent[]> {
-  if (year < AVAILABLE_YEAR_START || year > AVAILABLE_YEAR_END) {
+  if (!isAvailableYear(year)) {
     throw new Error(`Invalid parameter: year=${year}`);
   }
 
@@ -25,7 +29,7 @@ async function fetchEvents(
   year: number,
   month: number
 ): Promise<GknuCalendarEvent[]> {
-  if (year < AVAILABLE_YEAR_START || year > AVAILABLE_YEAR_END) {
+  if (!isAvailableYear(year)) {
     throw new Error(`Invalid parameter: year=${year}`);
   }
 
