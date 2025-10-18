@@ -1,24 +1,43 @@
-import './style.css'
-import typescriptLogo from './typescript.svg'
-import viteLogo from '/vite.svg'
-import { setupCounter } from './counter.ts'
+import "./style.css";
+import { buildICS } from "./calendar.ts";
+import { fetchEventsOnYear, isAvailableYear } from "./scraper.ts";
 
-document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
-  <div>
-    <a href="https://vite.dev" target="_blank">
-      <img src="${viteLogo}" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://www.typescriptlang.org/" target="_blank">
-      <img src="${typescriptLogo}" class="logo vanilla" alt="TypeScript logo" />
-    </a>
-    <h1>Vite + TypeScript</h1>
-    <div class="card">
-      <button id="counter" type="button"></button>
-    </div>
-    <p class="read-the-docs">
-      Click on the Vite and TypeScript logos to learn more
-    </p>
-  </div>
-`
+const yearInput = document.querySelector<HTMLInputElement>("#yearInput")!;
+yearInput.value = new Date().getFullYear().toString();
 
-setupCounter(document.querySelector<HTMLButtonElement>('#counter')!)
+const downloadBtn = document.querySelector<HTMLButtonElement>("#downloadBtn")!;
+downloadBtn.addEventListener("click", async () => {
+  const year = parseInt(yearInput.value, 10);
+
+  if (!isAvailableYear(year)) {
+    alert("올바른 연도를 입력해주세요");
+    return;
+  }
+
+  downloadBtn.disabled = true;
+  downloadBtn.textContent = "다운로드 중...";
+
+  try {
+    const events = await fetchEventsOnYear(year);
+    const ics = buildICS(events);
+    downloadText(`gknu-${year}.ics`, ics);
+  } catch (err) {
+    console.error(err);
+    alert(`캘린더 다운로드 실패: ${err}`);
+  } finally {
+    downloadBtn.textContent = "캘린더 생성 및 다운로드";
+    downloadBtn.disabled = false;
+  }
+});
+
+function downloadText(fileName: string, text: string) {
+  const blob = new Blob([text], { type: "text/calendar;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = fileName;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
