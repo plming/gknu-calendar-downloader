@@ -1,12 +1,11 @@
 import "./style.css";
-import { saveGknuCalendarICS } from "./calendar.ts";
+import { buildICS } from "./calendar.ts";
+import { fetchEventsOnYear } from "./scraper.ts";
 
-const downloadBtn = document.querySelector<HTMLButtonElement>("#downloadBtn")!;
 const yearInput = document.querySelector<HTMLInputElement>("#yearInput")!;
-
-// 현재 연도로 초기값 설정
 yearInput.value = new Date().getFullYear().toString();
 
+const downloadBtn = document.querySelector<HTMLButtonElement>("#downloadBtn")!;
 downloadBtn.addEventListener("click", async () => {
   const year = parseInt(yearInput.value, 10);
 
@@ -19,16 +18,26 @@ downloadBtn.addEventListener("click", async () => {
   downloadBtn.textContent = "다운로드 중...";
 
   try {
-    await saveGknuCalendarICS(year);
-    downloadBtn.textContent = "다운로드 완료!";
-    setTimeout(() => {
-      downloadBtn.textContent = "캘린더 생성 및 다운로드";
-      downloadBtn.disabled = false;
-    }, 2000);
+    const events = await fetchEventsOnYear(year);
+    const ics = buildICS(events);
+    downloadText(`gknu-${year}.ics`, ics);
   } catch (err) {
     console.error(err);
     alert(`캘린더 다운로드 실패: ${err}`);
+  } finally {
     downloadBtn.textContent = "캘린더 생성 및 다운로드";
     downloadBtn.disabled = false;
   }
 });
+
+function downloadText(fileName: string, text: string) {
+  const blob = new Blob([text], { type: "text/calendar;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = fileName;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
