@@ -1,6 +1,10 @@
 import "./style.css";
 import { buildICS } from "./calendar.ts";
-import { fetchEventsOnYear } from "./scraper.ts";
+import {
+  AVAILABLE_YEAR_END,
+  AVAILABLE_YEAR_START,
+  fetchEventsOnYear,
+} from "./scraper.ts";
 
 const yearInput = document.querySelector<HTMLInputElement>("#yearInput")!;
 yearInput.value = new Date().getFullYear().toString();
@@ -9,8 +13,8 @@ const downloadBtn = document.querySelector<HTMLButtonElement>("#downloadBtn")!;
 downloadBtn.addEventListener("click", async () => {
   const year = parseInt(yearInput.value, 10);
 
-  if (isNaN(year) || year < 2000 || year > 2100) {
-    alert("올바른 연도를 입력해주세요 (2000-2100)");
+  if (isNaN(year) || year < AVAILABLE_YEAR_START || year > AVAILABLE_YEAR_END) {
+    alert("올바른 연도를 입력해주세요");
     return;
   }
 

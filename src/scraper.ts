@@ -4,8 +4,8 @@ export interface GknuCalendarEvent {
   notice_end_date: string;
 }
 
-const AVAILABLE_YEAR_START = 2000;
-const AVAILABLE_YEAR_END = new Date().getFullYear() + 1;
+export const AVAILABLE_YEAR_START = 2000;
+export const AVAILABLE_YEAR_END = new Date().getFullYear() + 1;
 
 export async function fetchEventsOnYear(
   year: number
