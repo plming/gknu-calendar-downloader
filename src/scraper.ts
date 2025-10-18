@@ -66,9 +66,9 @@ function validate(events: unknown): events is GknuCalendarEvent[] {
 
   for (const event of events) {
     if (
-      typeof event.title !== "string" ||
-      typeof event.notice_start_date !== "string" ||
-      typeof event.notice_end_date !== "string"
+      typeof event?.title !== "string" ||
+      typeof event?.notice_start_date !== "string" ||
+      typeof event?.notice_end_date !== "string"
     ) {
       return false;
     }
