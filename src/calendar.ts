@@ -37,12 +37,7 @@ function toDateArray(date: string): [number, number, number] {
   const month = parts[1];
   const day = parts[2];
 
-  if (
-    parts.length !== 3 ||
-    year === undefined ||
-    month === undefined ||
-    day === undefined
-  ) {
+  if (year === undefined || month === undefined || day === undefined) {
     throw new Error(`Invalid date format: ${date}`);
   }
 
