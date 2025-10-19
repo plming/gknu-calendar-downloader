@@ -40,7 +40,7 @@ async function fetchEvents(
   }
 
   const BASE_URL = "https://www.gknu.ac.kr";
-  const CORS_PROXY = "https://api.allorigins.win/get?url=";
+  const CORS_PROXY = "https://corsproxy.io/?";
 
   const gknuUrl = `${BASE_URL}/main/module/schedule/view.do?category1=101&notice_start_date=${year}-${month
     .toString()
@@ -56,12 +56,11 @@ async function fetchEvents(
   }
 
   const data = await response.json();
-  const parsed = JSON.parse(data.contents);
-  if (!validate(parsed)) {
+  if (!validate(data)) {
     throw new Error("Invalid data format received from GKNU");
   }
 
-  return parsed;
+  return data;
 }
 
 function validate(events: unknown): events is GknuCalendarEvent[] {
