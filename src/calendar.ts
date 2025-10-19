@@ -31,9 +31,18 @@ export function buildICS(events: GknuCalendarEvent[]): string {
 }
 
 function toDateArray(date: string): [number, number, number] {
-  const [year, month, day] = date.split("-").map((v) => parseInt(v, 10));
+  const parts = date.split("-").map((v) => parseInt(v, 10));
 
-  if (year === undefined || month === undefined || day === undefined) {
+  const year = parts[0];
+  const month = parts[1];
+  const day = parts[2];
+
+  if (
+    parts.length !== 3 ||
+    year === undefined ||
+    month === undefined ||
+    day === undefined
+  ) {
     throw new Error(`Invalid date format: ${date}`);
   }
 
