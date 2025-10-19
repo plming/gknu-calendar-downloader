@@ -40,15 +40,18 @@ async function fetchEvents(
   }
 
   const BASE_URL = "https://www.gknu.ac.kr";
-  const CORS_PROXY = "https://corsproxy.io/?";
+  const CORS_PROXY = "https://proxy.corsfix.com/?";
 
   const gknuUrl = `${BASE_URL}/main/module/schedule/view.do?category1=101&notice_start_date=${year}-${month
     .toString()
     .padStart(2, "0")}`;
 
-  const url = `${CORS_PROXY}${encodeURIComponent(gknuUrl)}`;
+  const url = `${CORS_PROXY}${gknuUrl}`;
 
-  const response = await fetch(url, { method: "GET" });
+  const response = await fetch(url, {
+    method: "GET",
+    headers: { "x-corsfix-cache": "true" },
+  });
   if (!response.ok) {
     throw new Error(
       `Failed to fetch events: ${response.status} ${response.statusText}`
