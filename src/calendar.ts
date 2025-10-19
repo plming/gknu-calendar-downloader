@@ -2,19 +2,6 @@ import * as ics from "ics";
 
 import { type GknuCalendarEvent } from "./scraper";
 
-function toDateArray(date: string): [number, number, number] {
-  const parts = date.split("-").map((v) => parseInt(v, 10));
-  if (parts.length !== 3) {
-    throw new Error(`Invalid date format: ${date}`);
-  }
-
-  return [parts[0], parts[1], parts[2]];
-}
-
-function isEmptyString(str: string): boolean {
-  return !str.trim();
-}
-
 export function buildICS(events: GknuCalendarEvent[]): string {
   const eventAttributes: ics.EventAttributes[] = [];
   for (const event of events) {
@@ -41,4 +28,18 @@ export function buildICS(events: GknuCalendarEvent[]): string {
   }
 
   return result.value;
+}
+
+function toDateArray(date: string): [number, number, number] {
+  const [year, month, day] = date.split("-").map((v) => parseInt(v, 10));
+
+  if (year === undefined || month === undefined || day === undefined) {
+    throw new Error(`Invalid date format: ${date}`);
+  }
+
+  return [year, month, day];
+}
+
+function isEmptyString(str: string): boolean {
+  return !str.trim();
 }
