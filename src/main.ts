@@ -15,7 +15,7 @@ downloadBtn.addEventListener("click", async () => {
   }
 
   downloadBtn.disabled = true;
-  downloadBtn.textContent = "다운로드 중...";
+  downloadBtn.classList.add("loading");
 
   try {
     const events = await fetchEventsOnYear(year);
@@ -25,7 +25,7 @@ downloadBtn.addEventListener("click", async () => {
     console.error(err);
     alert(`캘린더 다운로드 실패: ${err}`);
   } finally {
-    downloadBtn.textContent = "캘린더 생성 및 다운로드";
+    downloadBtn.classList.remove("loading");
     downloadBtn.disabled = false;
   }
 });
