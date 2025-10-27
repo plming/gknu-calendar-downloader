@@ -18,11 +18,13 @@ export async function fetchEventsOnYear(
     throw new Error(`Invalid parameter: year=${year}`);
   }
 
-  const results = await Promise.all(
-    Array.from({ length: 12 }, (_, i) => fetchEvents(year, i + 1))
-  );
+  const results: GknuCalendarEvent[] = [];
+  for (let month = 1; month <= 12; ++month) {
+    const events = await fetchEvents(year, month);
+    results.push(...events);
+  }
 
-  return results.flat();
+  return results;
 }
 
 async function fetchEvents(
