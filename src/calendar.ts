@@ -23,7 +23,7 @@ export function buildICS(events: GknuCalendarEvent[]): string {
     throw new Error("Failed to create ICS events", { cause: result.error });
   }
 
-  if (result.value === undefined) {
+  if (result.value === null) {
     throw new Error("Failed to create ICS events. No value returned.");
   }
 
